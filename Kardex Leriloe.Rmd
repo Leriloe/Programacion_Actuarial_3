@@ -1,0 +1,38 @@
+---
+title: "Kardex Leriloe"
+author: "Leriloe Gutierrez Soto"
+date: "29 de agosto de 2016"
+output: html_document
+---
+A continuacion se muestran las clases que he cursado durante los dos semestres pasados, y las que estoy cursando actualmente. Las de los semestres pasados tienen la calificacion despues de los dos puntos.
+
+# Primer semestre
+## Lista clases
+* Programacion Actuarial I: 10
+* Introduccion a la Profesion Actuarial: 6
+* DHPC: 10
+* Conceptos de Calculo: 10
+* Matematicas Basicas: 9
+* Problemas de Mat. Basicas: 9
+
+# Segundo Semestre
+## Lista clases
+* Calculo Diferencial: 5
+* Teoria de Ecuaciones: 5
+* Programacion Actuarial II: 8
+* Microeconomia: 9
+* Teoria del Interes I: 7
+* Geometria Analitica: 10
+
+# Tercer Semestre
+## Lista clases
+* Calculo Diferencial
+* Teoria de Ecuaciones
+* Programacion Actuarial III
+* Macroeconomia
+* Reg. Acad. y Cient. del Esp.
+* Teoria del Interes II
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
