@@ -1,11 +1,7 @@
 mediacontaminante <- function(directorio, contaminante, id=1:332){
+  #setwd(paste("~/Desktop/actuaria/Programacion_Actuarial_3_Enviar_Archivos/",directorio,sep=""))
   setwd("~/Desktop/actuaria/Programacion_Actuarial_3_Enviar_Archivos/specdata")
-  x <- vector("numeric")
-  datos <- vector("numeric")
-  if(contaminante == "sulfate"){
-    c == 1
-  }else if (contaminante == "nitrate"){c==2}
-  
+  j <- T
   for(i in id) {
     if (i<10) {
       datos <- read.csv(paste("00", i, ".csv", sep=""))
@@ -14,15 +10,20 @@ mediacontaminante <- function(directorio, contaminante, id=1:332){
     }else {
       datos <-read.csv(paste(i,".csv",sep=""))
     }
-    
-    datoscom <- complete.cases(datos)
-    y <- datos[datoscom, ]
-    x <- rbind(y[datoscom, ])
+    if (j){
+      x <- datos 
+    } else {
+      x <- rbind(x,datos)
+    }
+    j <- F
   }
   
-  if(c == 1){
-    media <- mean(y[ , 2])
-  }else if(c == 2){media <- mean(x[ , 3])}
-   print(media)
+  if(contaminante == "nitrate"){
+    media <- mean(x[ , 3], na.rm = TRUE)
+  }else if(contaminante == "sulfate"){
+    media <- mean(x[ , 2], na.rm = TRUE)
   }
-mediacontaminante(specdata, "sulfate", id=1:5)
+   print(media)
+}
+mediacontaminante(specdata, "sulfate", id=1:10)
+data <- read.csv("001.csv")

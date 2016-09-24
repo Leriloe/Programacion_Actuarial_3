@@ -22,4 +22,4 @@ completos <- function(directorio, id=1:332){
   resultado <- data.frame(id=id,nobs=x)
   resultado
 }
-completos(specdata,1:10)
+completos(specdata,3)

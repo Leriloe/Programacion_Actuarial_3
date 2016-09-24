@@ -19,9 +19,10 @@ corr <- function(directorio, horizonte = 0){
     if(filas>= horizonte){
       relacion <- cor(y[ , 2], y[ , 3])
       resultado <- c(resultado, relacion)
-      print(resultado)
     }
   }
+  print(resultado)
 }
 
-corr(specdata, 100)
+cr  <- corr(specdata, 150)
+head(cr)
