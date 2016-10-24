@@ -23,10 +23,17 @@ rankingcompleto <- function(resultado, num = "mejor"){
     
     for(i in 1:largo) {
         sts <- datos[estados[i] == datos$State, ]
-        a <- sts[, columnas]
+        
+        a <- as.character(sts[,2])
+        sts <- sts[order(a),]
+        
+        a <- as.numeric(as.character(sts[,columnas]))
         orden <- sts[order(a, na.last = NA), ]
+        
+        
+        orden[,2] <- as.character(orden[,2])
         primero <- orden[1,2]
-        ultimo <- orden[nrow(orden), 2]
+        ultimo <- orden[sum(as.numeric(orden[,columnas]) != 106), 2]
         
         if(num == "mejor"){
             nombre <- primero
@@ -41,8 +48,8 @@ rankingcompleto <- function(resultado, num = "mejor"){
     
     res1 <- matrix(x, largo, 2, byrow = TRUE)
     colnames(res1) <- c("Hospital", "State")
-    rownames(res1) <- estados
     res2 <- data.frame(res1)
     res2
 }
 head(rankingcompleto("ataque", 20), 10)
+rankingcompleto("falla", 5)

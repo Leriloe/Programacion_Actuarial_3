@@ -5,17 +5,17 @@ mejor <- function(estado, resultado){
     datos <- read.csv("outcome-of-care-measures.csv")
     
     # Validaci??n variables
-    USA <- unique(datos$State)
+    USA <- levels(datos$State)
     if(!estado %in% USA){
         stop("Invalid State")
         break
     }
     columnas <- if(resultado =="ataque"){
-        11
+        columnas <- 11
     } else if(resultado == "falla"){
-        17
+        columnas <- 17
     } else if(resultado == "neumonia"){
-        23
+        columnas <- 23
     } else{
         stop("Invalid outcome")
         break
@@ -24,10 +24,16 @@ mejor <- function(estado, resultado){
     # Resultado
     df <- subset(datos, datos$State == estado)
     x <- df[which.min(df[ , columnas]), ]
-    y <- x[order(x$Hospital.Name), ]
+    y <- x[order(x$Hospital.Name, na.last = NA, decreasing = FALSE), ]
     mhospital <- y[1, 2]
     mhospital
    
 }
 
 mejor("TX", "ataque")
+mejor("TX", "falla")
+mejor("NY", "neumonia")
+mejor("OK", "neumonia")
+mejor("AL", "falla")
+mejor("MD", "ataque")
+mejor("MD", "neumonia")
