@@ -1,0 +1,140 @@
+---
+title: "Programaci?n Actuarial III"
+author: "Aquino Sanchez Nuria Donaji, Avendano Ortiz Michelle, Gaona Cortez Monica, Gutierrez Soto Leriloe, Vazquez Herrera Marisol"
+date: "14 de diciembre de 2016"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+####**Caso 3:Reconocimiento de Actividad Humana con Celulares**
+
+####**Datos**
+   Los datos pueden ser descargados de la siguiente liga:   https://www.dropbox.com/s/j26ksrw1jzqz2a1/getdata-projec   tfilesUCI%20HAR%20Dataset.zip?dl=0
+
+####**Descripci?n del programa**
+ El programa  ```"correr_analisis.R"``` har? lo siguiente: 
+
+1. Une los datos de test con los de training, para crear un solo conjunto de datos. 
+2. Extrae ?nicamente las medidas de media y desviaci?n est?ndar de cada medici?n. 
+3. Usa nombres de actividad para describir los nombres de las actividades en la base de datos. 
+4. Coloca etiquetas apropiadas en la base de datos con nombres de variables que las describan. 
+5. Con los datos del paso 4, crea una segunda base de datos independiente con el promedio de cada variable para cada actividad y cada sujeto. 
+
+####**Paquetes adicionales**
+  Se utiliza el paquete dplyr()
+ 
+ ```library(dplyr)```
+
+####**Funcionamiento del c?digo**
+
+####**Lectura de datos**
+  El programa carga los archivos *features.txt* y *activity_labels* y se los asigna a variables:
+
+```
+features<- read.table(paste("features.txt",sep = "/"),quote ="\"")
+activities_labels<- read.table(paste("activity_labels.txt",sep = "/"),quote ="\"")
+
+```
+
+ Adem?s carga la base de datos de *Train* y de *Test*
+
+```
+train <-read.table(paste("train/X_train.txt", sep="/"),quote= "\"")
+subject_train<-read.table(paste("train/subject_train.txt", sep="/"),quote= "\"")
+y_train<-read.table(paste("train/y_train.txt", sep="/"),quote= "\"")
+
+```
+
+```
+test <-read.table(paste("test/X_test.txt", sep="/"),quote= "\"")
+subject_test<-read.table(paste("test/subject_test.txt", sep="/"),quote= "\"")
+y_test<-read.table(paste("test/y_test.txt", sep="/"),quote= "\"")
+```
+
+
+#####**1) Une los datos de test con los de training, para crear un solo conjunto de datos**
+
+```
+data <- rbind(train,test)
+volunteers <- rbind(subject_train,subject_test)[,1]
+actividades <- rbind(y_train,y_test)
+
+```
+
+#####**2) Extrae ?nicamente las medidas de media y desviaci?n est?ndar de cada medici?n**
+
+*Seleccionamos la columna 2 de features :
+
+```nombres <- features[,2]``` 
+
+*Le ponemos nombre a las columnas de data :
+
+```colnames(data) <- nombres ```
+
+*Vector que contiene las posiciones de las columnas que tienen en el nombre std o mean :
+
+```a <- grep('-(mean|std)',features[,2]) ``` 
+
+*Extrae las coincidencias :
+
+```stdmean <- nombres[a] ```
+
+*Hace una nueva tabla con las coincidencias:
+
+```data1<- data[,a] ```
+
+*Encontramos 79 columnas que tienen promedio o desviaci?nn est?ndar
+
+#####**3) Usa nombres de actividad para describir los nombres de las actividades en la base de datos**  
+
+*Seleccionamos los nombres de las actividades y las convertimos en  un vector:
+
+```ac <-as.vector(activities_labels[,2]) ```
+
+*En la columna de n?meros aparecen ahora las actividades:
+
+```ad <-ac[actividades[,1]]```
+
+*Como sale un vector de caracteres lo tranformamos a un data.frame:
+
+```ap <-as.data.frame(ad)```
+
+*Unimos ap con data1 para crear una sola tabla:
+
+```data1 <- cbind(Activity = ad, data1)```
+
+
+#####**4) Coloca etiquetas apropiadas en la base de datos con nombres de variables que las describan** 
+*Lo que hace sub es buscar coincidencias y reemplazarlas con un valor diferente, as? hacemos que las variables tengan nombres m?s adecuados:
+
+```
+colnames(data1) <- sub("mean", "Mean", colnames(data1))
+colnames(data1) <- sub("t", "Time", colnames(data1))
+colnames(data1) <- sub("sTimed", "Std", colnames(data1))
+colnames(data1) <- sub("f", "Frequency", colnames(data1))
+colnames(data1) <- sub("meanFreq", "MeanFreq", colnames(data1))
+colnames(data1) <- sub("()-X", "(X)", colnames(data1))
+colnames(data1) <- sub("()-Y", "(Y)", colnames(data1))
+colnames(data1) <- sub("()-Z", "(Z)", colnames(data1))
+colnames(data1) <- sub("-", ".", colnames(data1))
+colnames(data1) <- sub("AcTimeivity", "Activity", colnames(data1))
+
+```
+
+
+#####**5)Con los datos del paso 4, crea una segunda base de datos independiente con el promedio de cada variable para cada actividad y cada sujeto**
+*Une la columna de voluntarios al data1 :
+
+```data1<-cbind(Volunteers=volunteers,data1)```
+
+*Por grupo de actividad y voluntarios, saca su promedio a cada uno:
+
+```promedio <- data1 %>% group_by(Volunteers,Activity) %>% summarise_each(funs(mean))```
+
+*Creamos la segunda base de datos con el promedio de cada variable para cada actividad y sujeto :
+
+```write.table(promedio,row.name = FALSE,file = "correr_analisis_final.txt")```
+
